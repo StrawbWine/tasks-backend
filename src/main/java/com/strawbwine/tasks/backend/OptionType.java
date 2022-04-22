@@ -1,5 +1,5 @@
 package com.strawbwine.tasks.backend;
 
 public enum OptionType {
-    SHOWTASKS, ADDTASK, WORKONTASK, QUIT, ADDUSER, DELETETASK
+    SHOWTASKS, SHOWUSERS, ADDTASK, WORKONTASK, QUIT, ADDUSER, DELETETASK
 }

@@ -24,7 +24,7 @@ public class FileStorage implements IDatabase {
     String dbEntry = String.format(
       "%s,%s,%d,%d",
       task.getName(),
-      task.getOwner(),
+      task.getOwner().getName(),
       task.getTimeSpent().toHours(),
       task.getEstimatedTimeToFinish().toHours()
     );
@@ -53,7 +53,33 @@ public class FileStorage implements IDatabase {
 
   @Override
   public DatabaseResponse write(User user) {
-    return null;
+    String dbEntry = String.format(
+      "%s,%s",
+      user.getName(),
+      user.getDateOfBirth().toString()
+    );
+    System.out.println(dbEntry);
+
+    FileWriter writer = null;
+
+    try {
+      writer = new FileWriter(USERSFILEPATH, true);
+      writer.append(dbEntry + "\n");
+    } catch (IOException ex) {
+      System.out.println(ex.getMessage());
+      System.out.println(ex.getStackTrace());
+      return DatabaseResponse.FAILED;
+    } finally {
+      try {
+        writer.flush();
+        writer.close();
+      } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+        System.out.println(ex.getStackTrace());
+      }
+    }
+    return DatabaseResponse.OK;
+
   }
 
   @Override
@@ -64,7 +90,7 @@ public class FileStorage implements IDatabase {
     try {
       reader = new BufferedReader(new FileReader(TASKSFILEPATH));
       String currentLine;
-      while ((currentLine = reader.readLine()) != null) {
+      while ((currentLine = reader.readLine()) != null && currentLine.length() >= 1) {
         currentRowEntries = currentLine.split(",");
         try {
           tasks.add(
@@ -96,7 +122,39 @@ public class FileStorage implements IDatabase {
 
   @Override
   public List<User> fetchAllUsers() {
-    return null;
+    List<User> users = new ArrayList<>();
+    BufferedReader reader = null;
+    String[] currentRowEntries;
+    try {
+      reader = new BufferedReader(new FileReader(USERSFILEPATH));
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null && currentLine.length() >= 1) {
+        currentRowEntries = currentLine.split(",");
+        try {
+          users.add(
+            new User(
+              currentRowEntries[0],
+              LocalDate.parse(currentRowEntries[1])
+            )
+          );
+        } catch (NumberFormatException ex) {
+          System.out.println(ex.getMessage());
+          System.out.println(ex.getStackTrace());
+        }
+      }
+    } catch (IOException ex) {
+      System.out.println(ex.getMessage());
+      ex.printStackTrace();
+    } finally {
+      try {
+        reader.close();
+      } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+        ex.printStackTrace();
+      }
+    }
+    return users;
+
   }
 
   @Override

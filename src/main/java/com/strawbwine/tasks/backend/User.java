@@ -29,6 +29,6 @@ public class User {
 
     @Override
     public String toString() {
-        return name;
+        return String.format("%15s %15s", this.name, this.dateOfBirth);
     }
 }

@@ -23,6 +23,12 @@ public class Main {
             switch (selectedOption.getOptionType()) {
                 case SHOWTASKS -> {
                     gui.showAllTasks(storage.fetchAllTasks());
+                    gui.displayOptions();
+                    break;
+                }
+                case SHOWUSERS -> {
+                    gui.showAllUsers(storage.fetchAllUsers());
+                    gui.displayOptions();
                     break;
                 }
                 case ADDTASK -> {
@@ -80,10 +86,11 @@ public class Main {
     private static List<GUIOption> getGuiOptions() {
         List<GUIOption> options = new ArrayList<GUIOption>();
         options.add(new GUIOption(1, OptionType.SHOWTASKS, "Show list of tasks"));
-        options.add(new GUIOption(2, OptionType.ADDTASK, "Add new task"));
-        options.add(new GUIOption(3, OptionType.WORKONTASK, "Work on task"));
-        options.add(new GUIOption(4, OptionType.DELETETASK, "Delete task"));
-        options.add(new GUIOption(5, OptionType.QUIT, "Exit application"));
+        options.add(new GUIOption(2, OptionType.SHOWUSERS, "Show list of users"));
+        options.add(new GUIOption(3, OptionType.ADDTASK, "Add new task"));
+        options.add(new GUIOption(4, OptionType.WORKONTASK, "Work on task"));
+        options.add(new GUIOption(5, OptionType.DELETETASK, "Delete task"));
+        options.add(new GUIOption(6, OptionType.QUIT, "Exit application"));
         return options;
     }
 }

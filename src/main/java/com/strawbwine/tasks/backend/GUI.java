@@ -64,7 +64,11 @@ public class GUI {
     }
 
     public void showAllTasks(List<TodoItem> tasks) {
-        tasks.forEach(task -> System.out.println(task.toString()));
+        if (tasks.size() >= 1) {
+            tasks.forEach(task -> System.out.println(task.toString()));
+        } else {
+            System.out.println("No tasks to show!");
+        }
     }
 
     public TaskSpec requestTaskInformation() {
@@ -106,5 +110,13 @@ public class GUI {
         }
         userParams.put("dateOfBirth", dateOfBirthString);
         return userParams;
+    }
+
+    public void showAllUsers(List<User> users) {
+        if (users.size() >= 1) {
+            users.forEach(user -> System.out.println(user.toString()));
+        } else {
+            System.out.println("No users to show!");
+        }
     }
 }
