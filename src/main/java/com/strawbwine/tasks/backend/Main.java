@@ -15,7 +15,9 @@ public class Main {
         gui.startUpMessage();
         gui.displayOptions();
 
-        while (true) {
+        boolean running = true;
+
+        while (running) {
             int userInput = gui.receiveInputFromUser();
 
             GUIOption selectedOption = options.stream().filter(option -> option.getId() == userInput).toList().get(0);
@@ -24,18 +26,15 @@ public class Main {
                 case SHOWTASKS -> {
                     gui.showAllTasks(storage.fetchAllTasks());
                     gui.displayOptions();
-                    break;
                 }
                 case SHOWUSERS -> {
                     gui.showAllUsers(storage.fetchAllUsers());
                     gui.displayOptions();
-                    break;
                 }
                 case ADDTASK -> {
                     TodoItem newTask = new TodoItem(gui.requestTaskInformation());
                     storage.write(newTask);
                     gui.displayOptions();
-                    break;
                 }
                 case ADDUSER -> {
                     Map<String, String> userParams = gui.requestUserInformation();
@@ -46,45 +45,13 @@ public class Main {
                         )
                     );
                 }
-                case QUIT -> {}
+                case QUIT -> running = false;
             }
-/*            if (selectedOption.getOptionType() == OptionType.SHOWTASKS) {
-                gui.showAllTasks(storage.fetchAllTasks());
-            }
-
-            if (selectedOption.getOptionType() == OptionType.ADDTASK) {
-                TodoItem newTask = new TodoItem(gui.requestTaskInformation());
-                storage.write(newTask);
-                gui.displayOptions();
-            }*/
-
-/*            if(selectedOption.getOptionType() == OptionType.QUIT)
-                break;*/
         }
-
-
-
-
-/*        try {
-            TodoItem todoItem = new TodoItem("vaske", new User("Severin"), 3.50);
-            System.out.println(
-                    String.format(
-                            "%s skal %s i %d timer",
-                            todoItem.getOwner().getName(),
-                            todoItem.getName(),
-                            todoItem.getEstimatedTimeToFinish().toHours()
-                    )
-            );
-        } catch (NegativeDurationException ex) {
-            System.out.println("Estimated time to finish task must be positive");
-            System.err.println(ex.getMessage());
-        }*/
-
-
     }
 
     private static List<GUIOption> getGuiOptions() {
-        List<GUIOption> options = new ArrayList<GUIOption>();
+        List<GUIOption> options = new ArrayList<>();
         options.add(new GUIOption(1, OptionType.SHOWTASKS, "Show list of tasks"));
         options.add(new GUIOption(2, OptionType.SHOWUSERS, "Show list of users"));
         options.add(new GUIOption(3, OptionType.ADDTASK, "Add new task"));

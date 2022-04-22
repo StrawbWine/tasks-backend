@@ -1,6 +1,5 @@
 package com.strawbwine.tasks.backend;
 
-import java.sql.Time;
 import java.time.Duration;
 
 public class TodoItem {

@@ -1,15 +1,13 @@
 package com.strawbwine.tasks.backend;
 
-import java.text.DateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 
 public class GUI {
 
-    private Scanner scanner = new Scanner(System.in);
-    private List<GUIOption> options;
-    private IDatabase storage;
+    private final Scanner scanner = new Scanner(System.in);
+    private final List<GUIOption> options;
+    private final IDatabase storage;
 
     public GUI(List<GUIOption> options, IDatabase storage) {
         this.options = options;
@@ -23,11 +21,7 @@ public class GUI {
     }
 
     public String stars(int number) {
-        StringBuilder sb = new StringBuilder(100);
-        for (int i = 0; i < number; i++) {
-            sb.append("*");
-        }
-        return sb.toString();
+        return "*".repeat(number);
     }
 
     public String stars() {
@@ -55,8 +49,7 @@ public class GUI {
         List<Integer> validInput = options.stream().map(GUIOption::getId).toList();
         try {
             int parsedInt = Integer.parseInt(s);
-            if (validInput.contains(parsedInt)) return true;
-            else return false;
+            return validInput.contains(parsedInt);
         } catch (NumberFormatException ex) {
             return false;
         }
@@ -97,13 +90,14 @@ public class GUI {
         Map<String, String> userParams = new HashMap<>();
         System.out.println("Please enter the name of the user");
         userParams.put("name", scanner.nextLine());
-        Boolean inputHasProperFormat = false;
+        boolean inputHasProperFormat = false;
         String dateOfBirthString = null;
         while (!inputHasProperFormat) {
             System.out.println("Please enter the day of birth of the user in format YYYY-MM-DD");
             dateOfBirthString = scanner.nextLine();
             try {
                 LocalDate.parse(dateOfBirthString);
+                inputHasProperFormat = true;
             } catch (Exception ex) {
                 System.out.println("Illegal date format");
             }
