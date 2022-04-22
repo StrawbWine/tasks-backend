@@ -54,10 +54,11 @@ public class Main {
         List<GUIOption> options = new ArrayList<>();
         options.add(new GUIOption(1, OptionType.SHOWTASKS, "Show list of tasks"));
         options.add(new GUIOption(2, OptionType.SHOWUSERS, "Show list of users"));
-        options.add(new GUIOption(3, OptionType.ADDTASK, "Add new task"));
-        options.add(new GUIOption(4, OptionType.WORKONTASK, "Work on task"));
-        options.add(new GUIOption(5, OptionType.DELETETASK, "Delete task"));
-        options.add(new GUIOption(6, OptionType.QUIT, "Exit application"));
+        options.add(new GUIOption(3, OptionType.ADDUSER, "Add new user"));
+        options.add(new GUIOption(4, OptionType.ADDTASK, "Add new task"));
+        options.add(new GUIOption(5, OptionType.WORKONTASK, "Work on task"));
+        options.add(new GUIOption(6, OptionType.DELETETASK, "Delete task"));
+        options.add(new GUIOption(7, OptionType.QUIT, "Exit application"));
         return options;
     }
 }
