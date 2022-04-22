@@ -28,7 +28,6 @@ public class FileStorage implements IDatabase {
       task.getTimeSpent().toHours(),
       task.getEstimatedTimeToFinish().toHours()
     );
-    System.out.println(dbEntry);
 
     FileWriter writer = null;
 
@@ -58,7 +57,6 @@ public class FileStorage implements IDatabase {
       user.getName(),
       user.getDateOfBirth().toString()
     );
-    System.out.println(dbEntry);
 
     FileWriter writer = null;
 

@@ -24,26 +24,38 @@ public class Main {
 
             switch (selectedOption.getOptionType()) {
                 case SHOWTASKS -> {
+                    System.out.println("Listing tasks...");
+                    System.out.println(gui.stars());
                     gui.showAllTasks(storage.fetchAllTasks());
+                    System.out.println(gui.stars());
+                    gui.returnToMainMenu();
                     gui.displayOptions();
                 }
                 case SHOWUSERS -> {
+                    System.out.println("Listing users...");
+                    System.out.println(gui.stars());
                     gui.showAllUsers(storage.fetchAllUsers());
+                    System.out.println(gui.stars());
+                    gui.returnToMainMenu();
                     gui.displayOptions();
                 }
                 case ADDTASK -> {
                     TodoItem newTask = new TodoItem(gui.requestTaskInformation());
                     storage.write(newTask);
+                    System.out.println(String.format("Added task: %s, %s", newTask.getName(), newTask.getOwner().getName()));
+                    gui.returnToMainMenu();
                     gui.displayOptions();
                 }
                 case ADDUSER -> {
                     Map<String, String> userParams = gui.requestUserInformation();
-                    storage.write(
-                        new User(
-                            userParams.get("name"),
-                            LocalDate.parse(userParams.get("dateOfBirth"))
-                        )
+                    User newUser = new User(
+                        userParams.get("name"),
+                        LocalDate.parse(userParams.get("dateOfBirth"))
                     );
+                    storage.write(newUser);
+                    System.out.println(String.format("Added user: %s, %s", newUser.getName(), newUser.getDateOfBirth().toString()));
+                    gui.returnToMainMenu();
+                    gui.displayOptions();
                 }
                 case QUIT -> running = false;
             }

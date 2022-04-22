@@ -113,4 +113,9 @@ public class GUI {
             System.out.println("No users to show!");
         }
     }
+
+    public void returnToMainMenu() {
+        System.out.println("Click enter to return to main menu");
+        scanner.nextLine();
+    }
 }
