@@ -33,19 +33,19 @@ public class GUI {
         options.forEach(System.out::println);
     }
 
-    public int receiveInputFromUser() {
+    public int receiveOptionFromUser() {
         String input = scanner.nextLine();
-        if (validateInputFromUser(input)) {
+        if (validateOptionFromUser(input)) {
             return Integer.parseInt(input);
         }
         else {
             System.out.println("Invalid input, please try again");
             displayOptions();
-            return receiveInputFromUser();
+            return receiveOptionFromUser();
         }
     }
 
-    public boolean validateInputFromUser(String s) {
+    public boolean validateOptionFromUser(String s) {
         List<Integer> validInput = options.stream().map(GUIOption::getId).toList();
         try {
             int parsedInt = Integer.parseInt(s);

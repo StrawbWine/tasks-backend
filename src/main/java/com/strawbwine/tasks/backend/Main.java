@@ -18,7 +18,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            int userInput = gui.receiveInputFromUser();
+            int userInput = gui.receiveOptionFromUser();
 
             GUIOption selectedOption = options.stream().filter(option -> option.getId() == userInput).toList().get(0);
 
