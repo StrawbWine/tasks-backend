@@ -33,18 +33,15 @@ public class FileStorage implements IDatabase {
 
     try {
       writer = new FileWriter(TASKSFILEPATH, true);
-      writer.append(dbEntry + "\n");
+      writer.append(String.format("%s%s", dbEntry, "\n"));
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      System.out.println(ex.getStackTrace());
+        ExceptionUtilities.handleException(ex);
       return DatabaseResponse.FAILED;
     } finally {
       try {
-        writer.flush();
         writer.close();
       } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-        System.out.println(ex.getStackTrace());
+        ExceptionUtilities.handleException(ex);
       }
     }
     return DatabaseResponse.OK;
@@ -62,22 +59,18 @@ public class FileStorage implements IDatabase {
 
     try {
       writer = new FileWriter(USERSFILEPATH, true);
-      writer.append(dbEntry + "\n");
+      writer.append(String.format("%s%s", dbEntry, "\n"));
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      System.out.println(ex.getStackTrace());
+      ExceptionUtilities.handleException(ex);
       return DatabaseResponse.FAILED;
     } finally {
       try {
-        writer.flush();
         writer.close();
       } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-        System.out.println(ex.getStackTrace());
+        ExceptionUtilities.handleException(ex);
       }
     }
     return DatabaseResponse.OK;
-
   }
 
   @Override
@@ -100,19 +93,18 @@ public class FileStorage implements IDatabase {
             )
           );
         } catch (NumberFormatException ex) {
-          System.out.println(ex.getMessage());
-          System.out.println(ex.getStackTrace());
+          ExceptionUtilities.handleException(ex);
+        } catch (NullPointerException ex) {
+          ExceptionUtilities.handleException(ex);
         }
       }
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      ex.printStackTrace();
+      ExceptionUtilities.handleException(ex);
     } finally {
       try {
         reader.close();
       } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-        ex.printStackTrace();
+        ExceptionUtilities.handleException(ex);
       }
     }
     return tasks;
@@ -136,19 +128,16 @@ public class FileStorage implements IDatabase {
             )
           );
         } catch (NumberFormatException ex) {
-          System.out.println(ex.getMessage());
-          System.out.println(ex.getStackTrace());
+          ExceptionUtilities.handleException(ex);
         }
       }
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      ex.printStackTrace();
+      ExceptionUtilities.handleException(ex);
     } finally {
       try {
         reader.close();
       } catch (IOException ex) {
-        System.out.println(ex.getMessage());
-        ex.printStackTrace();
+        ExceptionUtilities.handleException(ex);
       }
     }
     return users;
@@ -162,7 +151,7 @@ public class FileStorage implements IDatabase {
 
   @Override
   public User fetchUser(String userName) {
-    BufferedReader reader = null;
+    BufferedReader reader;
     try {
       reader = new BufferedReader(new FileReader(USERSFILEPATH));
       String currentLine;
@@ -173,11 +162,9 @@ public class FileStorage implements IDatabase {
         }
       }
     } catch (FileNotFoundException ex) {
-      System.out.println(ex.getMessage());
-      ex.printStackTrace();
+      ExceptionUtilities.handleException(ex);
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-      ex.printStackTrace();
+      ExceptionUtilities.handleException(ex);
     }
     return null;
   }
