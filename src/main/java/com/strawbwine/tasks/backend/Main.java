@@ -57,6 +57,9 @@ public class Main {
                     gui.returnToMainMenu();
                     gui.displayOptions();
                 }
+                case WORKONTASK -> {
+                    TodoItem taskToWorkOn = gui.requestTaskName();
+                }
                 case QUIT -> running = false;
             }
         }

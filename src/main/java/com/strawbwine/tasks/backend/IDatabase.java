@@ -9,4 +9,5 @@ public interface IDatabase {
     List<User> fetchAllUsers();
     List<TodoItem> fetchTasksForUser(User user);
     User fetchUser(String userName);
+    TodoItem fetchTask(String input);
 }

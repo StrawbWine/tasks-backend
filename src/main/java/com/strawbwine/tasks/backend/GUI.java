@@ -118,4 +118,19 @@ public class GUI {
         System.out.println("Click enter to return to main menu");
         scanner.nextLine();
     }
+
+    public TodoItem requestTaskName() {
+        boolean validInput = false;
+        System.out.println("Please enter the name of the task to work on:");
+        while (!validInput) {
+            String input = scanner.nextLine();
+            TodoItem response = storage.fetchTask(input);
+            if (response != null) {
+                return response;
+            } else {
+                System.out.println("Task not found, please try again");
+            }
+        }
+        return null;
+    }
 }

@@ -168,4 +168,30 @@ public class FileStorage implements IDatabase {
     }
     return null;
   }
+
+  @Override
+  public TodoItem fetchTask(String taskName) {
+    BufferedReader reader;
+    try {
+      reader = new BufferedReader(new FileReader(TASKSFILEPATH));
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        String[] rowEntries = currentLine.split(",");
+        if (taskName.equals(rowEntries[0])) {
+          return new TodoItem(
+            rowEntries[0],
+            fetchUser(rowEntries[1]),
+            Double.parseDouble(rowEntries[2]),
+            Double.parseDouble(rowEntries[3])
+          );
+        }
+      }
+    } catch (FileNotFoundException ex) {
+      ExceptionUtilities.handleException(ex);
+    } catch (IOException ex) {
+      ExceptionUtilities.handleException(ex);
+    }
+    return null;
+  }
 }
+
