@@ -1,5 +1,8 @@
 package com.strawbwine.tasks.backend;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +10,17 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+        CosmosDB cosmos = new CosmosDB();
+
+        UserDAO someUser = new UserDAO("3", "Kjell", "1980-01-01");
+        try {
+            cosmos.createUser(someUser);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        cosmos.getUser();
+
         IDatabase storage = new FileStorage();
 
         List<GUIOption> options = getGuiOptions();
