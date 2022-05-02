@@ -1,9 +1,13 @@
 package com.strawbwine.tasks.backend;
 
+import java.util.UUID;
+
 public class UserDAO {
   private String id;
   private String name;
   private String date;
+
+  public UserDAO() {}
 
   public UserDAO(String id, String name, String date) {
     this.id = id;
@@ -11,8 +15,10 @@ public class UserDAO {
     this.date = date;
   }
 
-  public UserDAO() {
-
+  public UserDAO(User user) {
+    this.id = user.getId();
+    this.name = user.getName();
+    this.date = user.getDateOfBirth().toString();
   }
 
   public String getName() {
@@ -33,9 +39,5 @@ public class UserDAO {
 
   public String getId() {
     return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 }

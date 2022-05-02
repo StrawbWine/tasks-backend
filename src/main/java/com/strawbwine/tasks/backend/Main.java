@@ -12,14 +12,32 @@ public class Main {
     public static void main(String[] args) {
         CosmosDB cosmos = new CosmosDB();
 
-        UserDAO someUser = new UserDAO("3", "Kjell", "1980-01-01");
+        User kjell = new User("Kjell", LocalDate.parse("1980-01-01"));
+        User roger = new User("Roger", LocalDate.parse("2000-01-01"));
+
+/*        try {
+            cosmos.write(kjell);
+            cosmos.write(roger);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }*/
+
+        TodoItem someTask = new TodoItem("Programmere", kjell, 0.0, 3.0);
         try {
-            cosmos.createUser(someUser);
+            cosmos.write(someTask);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        cosmos.getUser();
+        List<TodoItem> tasks = cosmos.fetchAllTasks();
+        for(TodoItem task: tasks) {
+            System.out.println(task.getName());
+        }
+
+/*        List<User> users = cosmos.fetchAllUsers();
+        for(User user: users) {
+            System.out.println(user.getName());
+        }*/
 
         IDatabase storage = new FileStorage();
 

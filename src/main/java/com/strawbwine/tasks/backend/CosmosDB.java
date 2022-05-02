@@ -10,6 +10,9 @@ import org.slf4j.impl.StaticLoggerBinder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,12 +117,10 @@ public class CosmosDB implements IDatabase {
     try {
       client = createClient();
       CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase("AzureSampleFamilyDB");
-      container = database.getContainer("Tasks");
-
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(userContainerName);
       CosmosPagedFlux<UserDAO> pagedFluxResponse = container.queryItems(
         "SELECT * FROM Tasks", queryOptions, UserDAO.class);
-
       pagedFluxResponse.subscribe(user -> System.out.println(user.getName()));
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -130,22 +131,109 @@ public class CosmosDB implements IDatabase {
 
   @Override
   public DatabaseResponse write(TodoItem task) {
-    return null;
+    System.out.println("Hello");
+    TodoItemDAO todoitemDAO = new TodoItemDAO(
+      task.getId(),
+      task.getName(),
+      new UserDAO(task.getOwner()),
+      task.getTimeSpent().toSeconds(),
+      task.getEstimatedTimeToFinish().toSeconds()
+    );
+    try {
+      client = createClient();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(taskContainerName);
+      container.createItem(todoitemDAO).block();
+      return DatabaseResponse.OK;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return DatabaseResponse.FAILED;
+    } finally {
+      client.close();
+    }
   }
 
   @Override
   public DatabaseResponse write(User user) {
-    return null;
+    UserDAO userDAO = new UserDAO(
+      user.getId(),
+      user.getName(),
+      user.getDateOfBirth().toString()
+    );
+    try {
+      client = createClient();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(userContainerName);
+      container.createItem(userDAO).block();
+      return DatabaseResponse.OK;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return DatabaseResponse.FAILED;
+    } finally {
+      client.close();
+    }
   }
 
   @Override
   public List<TodoItem> fetchAllTasks() {
-    return null;
+    List<TodoItem> tasks = new ArrayList<>();
+    try {
+      client = createClient();
+      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(taskContainerName);
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
+        "SELECT * FROM Tasks", queryOptions, TodoItemDAO.class);
+      tasks = pagedFluxResponse.map(dao ->
+        new TodoItem(
+          dao.getId(),
+          dao.getName(),
+          new User(dao.getOwner()),
+          dao.getSecondsSpent(),
+          dao.getEstimatedSecondsToFinish()
+        )
+      ).collectList().block();
+      return tasks;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        client.close();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+      return tasks;
   }
 
   @Override
   public List<User> fetchAllUsers() {
-    return null;
+    List<User> users = new ArrayList<>();
+    try {
+      client = createClient();
+      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(userContainerName);
+      CosmosPagedFlux<UserDAO> pagedFluxResponse = container.queryItems(
+        "SELECT * FROM Users", queryOptions, UserDAO.class);
+      users = pagedFluxResponse.map(dao ->
+        new User(
+          dao.getId(),
+          dao.getName(),
+          LocalDate.parse(dao.getDate())
+        )
+      ).collectList().block();
+      return users;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        client.close();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    return users;
   }
 
   @Override
