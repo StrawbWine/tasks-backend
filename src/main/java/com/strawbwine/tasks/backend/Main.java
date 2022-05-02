@@ -1,5 +1,8 @@
 package com.strawbwine.tasks.backend;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        IDatabase storage = new FileStorage();
+        IDatabase storage = new CosmosDB();
 
         List<GUIOption> options = getGuiOptions();
         GUI gui = new GUI(options, storage);
@@ -42,7 +45,7 @@ public class Main {
                 case ADDTASK -> {
                     TodoItem newTask = new TodoItem(gui.requestTaskInformation());
                     storage.write(newTask);
-                    System.out.println(String.format("Added task: %s, %s", newTask.getName(), newTask.getOwner().getName()));
+                    System.out.printf("Added task: %s, %s%n", newTask.getName(), newTask.getOwner().getName());
                     gui.returnToMainMenu();
                     gui.displayOptions();
                 }
@@ -53,7 +56,7 @@ public class Main {
                         LocalDate.parse(userParams.get("dateOfBirth"))
                     );
                     storage.write(newUser);
-                    System.out.println(String.format("Added user: %s, %s", newUser.getName(), newUser.getDateOfBirth().toString()));
+                    System.out.printf("Added user: %s, %s%n", newUser.getName(), newUser.getDateOfBirth().toString());
                     gui.returnToMainMenu();
                     gui.displayOptions();
                 }

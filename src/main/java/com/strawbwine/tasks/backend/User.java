@@ -1,14 +1,33 @@
 package com.strawbwine.tasks.backend;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class User {
+    private String id;
     private String name;
     private LocalDate dateOfBirth;
 
     public User(String name, LocalDate dateOfBirth) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public User(String id, String name, LocalDate dateOfBirth) {
+        this.id = id;
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public User(UserDAO dao) {
+        this.id = dao.getId();
+        this.name = dao.getName();
+        this.dateOfBirth = LocalDate.parse(dao.getDate());
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
