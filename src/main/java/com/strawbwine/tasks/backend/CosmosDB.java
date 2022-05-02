@@ -304,5 +304,46 @@ public class CosmosDB implements IDatabase {
       return null;
     }
   }
+
+  @Override
+  public TodoItem fetchTask(String taskName) {
+    List<TodoItem> tasks = new ArrayList<>();
+    try {
+      client = createClient();
+      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(taskContainerName);
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
+        String.format("SELECT * FROM c WHERE c.name = '%s'", taskName), queryOptions, TodoItemDAO.class);
+      tasks = pagedFluxResponse.map(dao ->
+        new TodoItem(
+          dao.getId(),
+          dao.getName(),
+          new User(dao.getOwner()),
+          dao.getSecondsSpent(),
+          dao.getEstimatedSecondsToFinish()
+        )
+      ).collectList().block();
+      try {
+        return tasks.get(0);
+      } catch (NullPointerException ex) {
+        return null;
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        client.close();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    try {
+      return tasks.get(0);
+    } catch (NullPointerException ex) {
+      return null;
+    }
+  }
+
 }
 
