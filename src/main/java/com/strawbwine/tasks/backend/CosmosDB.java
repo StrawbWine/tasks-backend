@@ -26,8 +26,8 @@ public class CosmosDB implements IDatabase {
   private CosmosAsyncDatabase database;
   private CosmosAsyncContainer container;
 
-  private String MASTER_KEY = System.getenv("COSMOS_ACCOUNT_KEY");
-  private String HOST = System.getenv("COSMOS_ACCOUNT_HOST");
+  private final String MASTER_KEY = System.getenv("COSMOS_ACCOUNT_KEY");
+  private final String HOST = System.getenv("COSMOS_ACCOUNT_HOST");
 
   protected static Logger logger;
 
@@ -57,7 +57,7 @@ public class CosmosDB implements IDatabase {
       .buildAsyncClient();
   }
 
-  private void createDatabaseIfNotExists() throws Exception {
+  private void createDatabaseIfNotExists() {
     logger.info("Create database {} if not exists.", databaseName);
     try {
       client = createClient();
@@ -74,7 +74,7 @@ public class CosmosDB implements IDatabase {
     }
   }
 
-  public void createContainersIfNotExists() throws Exception {
+  public void createContainersIfNotExists() {
     try {
       database = client.getDatabase(databaseName);
 
@@ -237,13 +237,73 @@ public class CosmosDB implements IDatabase {
   }
 
   @Override
-  public List<TodoItem> fetchTasksForUser(User user) {
-    return null;
+  public List<TodoItem> fetchTasksForUser(User user) {   List<TodoItem> tasks = new ArrayList<>();
+    try {
+      client = createClient();
+      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(taskContainerName);
+      String userId = user.getId();
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
+        String.format("SELECT * FROM c WHERE c.owner.id = '%s'", userId), queryOptions, TodoItemDAO.class);
+      tasks = pagedFluxResponse.map(dao ->
+        new TodoItem(
+          dao.getId(),
+          dao.getName(),
+          new User(dao.getOwner()),
+          dao.getSecondsSpent(),
+          dao.getEstimatedSecondsToFinish()
+        )
+      ).collectList().block();
+      return tasks;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        client.close();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    return tasks;
   }
 
   @Override
   public User fetchUser(String userName) {
-    return null;
+    List<User> users = new ArrayList<>();
+    try {
+      client = createClient();
+      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+      database = client.getDatabase(databaseName);
+      container = database.getContainer(userContainerName);
+      CosmosPagedFlux<UserDAO> pagedFluxResponse = container.queryItems(
+        String.format("SELECT * FROM c WHERE c.name = '%s'", userName), queryOptions, UserDAO.class);
+      users = pagedFluxResponse.map(dao ->
+        new User(
+          dao.getId(),
+          dao.getName(),
+          LocalDate.parse(dao.getDate())
+        )
+      ).collectList().block();
+      try {
+        return users.get(0);
+      } catch (NullPointerException ex) {
+        return null;
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        client.close();
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    try {
+      return users.get(0);
+    } catch (NullPointerException ex) {
+      return null;
+    }
   }
 }
 

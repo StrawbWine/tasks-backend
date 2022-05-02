@@ -22,22 +22,24 @@ public class Main {
             ex.printStackTrace();
         }*/
 
-        TodoItem someTask = new TodoItem("Programmere", kjell, 0.0, 3.0);
+/*        TodoItem someTask = new TodoItem("Kode", roger, 1.0, 5.0);
         try {
             cosmos.write(someTask);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
 
-        List<TodoItem> tasks = cosmos.fetchAllTasks();
+/*        List<TodoItem> tasks = cosmos.fetchTasksForUser(roger);
         for(TodoItem task: tasks) {
             System.out.println(task.getName());
-        }
+        }*/
 
 /*        List<User> users = cosmos.fetchAllUsers();
         for(User user: users) {
             System.out.println(user.getName());
         }*/
+
+        System.out.println(cosmos.fetchUser("Kjell").getDateOfBirth().toString());
 
         IDatabase storage = new FileStorage();
 
@@ -74,7 +76,7 @@ public class Main {
                 case ADDTASK -> {
                     TodoItem newTask = new TodoItem(gui.requestTaskInformation());
                     storage.write(newTask);
-                    System.out.println(String.format("Added task: %s, %s", newTask.getName(), newTask.getOwner().getName()));
+                    System.out.printf("Added task: %s, %s%n", newTask.getName(), newTask.getOwner().getName());
                     gui.returnToMainMenu();
                     gui.displayOptions();
                 }
@@ -85,7 +87,7 @@ public class Main {
                         LocalDate.parse(userParams.get("dateOfBirth"))
                     );
                     storage.write(newUser);
-                    System.out.println(String.format("Added user: %s, %s", newUser.getName(), newUser.getDateOfBirth().toString()));
+                    System.out.printf("Added user: %s, %s%n", newUser.getName(), newUser.getDateOfBirth().toString());
                     gui.returnToMainMenu();
                     gui.displayOptions();
                 }
