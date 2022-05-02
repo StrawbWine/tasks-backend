@@ -177,21 +177,14 @@ public class CosmosDB implements IDatabase {
   public List<TodoItem> fetchAllTasks() {
     List<TodoItem> tasks = new ArrayList<>();
     try {
-      client = createClient();
-      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase(databaseName);
-      container = database.getContainer(taskContainerName);
-      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
-        "SELECT * FROM Tasks", queryOptions, TodoItemDAO.class);
-      tasks = pagedFluxResponse.map(dao ->
-        new TodoItem(
-          dao.getId(),
-          dao.getName(),
-          new User(dao.getOwner()),
-          dao.getSecondsSpent(),
-          dao.getEstimatedSecondsToFinish()
-        )
-      ).collectList().block();
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = performQuery(
+        databaseName,
+        taskContainerName,
+        "SELECT * FROM c",
+        TodoItemDAO.class
+      );
+      tasks = pagedFluxResponse.map(TodoItem::new)
+        .collectList().block();
       return tasks;
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -209,20 +202,14 @@ public class CosmosDB implements IDatabase {
   public List<User> fetchAllUsers() {
     List<User> users = new ArrayList<>();
     try {
-      client = createClient();
-      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase(databaseName);
-      container = database.getContainer(userContainerName);
-      CosmosPagedFlux<UserDAO> pagedFluxResponse = container.queryItems(
-        "SELECT * FROM Users", queryOptions, UserDAO.class);
-      users = pagedFluxResponse.map(dao ->
-        new User(
-          dao.getId(),
-          dao.getName(),
-          LocalDate.parse(dao.getDate())
-        )
-      ).collectList().block();
-      return users;
+      CosmosPagedFlux<UserDAO> pagedFluxResponse = performQuery(
+        databaseName,
+        userContainerName,
+        "SELECT * FROM c",
+        UserDAO.class
+      );
+      return pagedFluxResponse.map(User::new
+        ).collectList().block();
     } catch (Exception ex) {
       ex.printStackTrace();
     } finally {
@@ -236,25 +223,17 @@ public class CosmosDB implements IDatabase {
   }
 
   @Override
-  public List<TodoItem> fetchTasksForUser(User user) {   List<TodoItem> tasks = new ArrayList<>();
+  public List<TodoItem> fetchTasksForUser(User user) {
+    List<TodoItem> tasks = new ArrayList<>();
     try {
-      client = createClient();
-      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase(databaseName);
-      container = database.getContainer(taskContainerName);
-      String userId = user.getId();
-      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
-        String.format("SELECT * FROM c WHERE c.owner.id = '%s'", userId), queryOptions, TodoItemDAO.class);
-      tasks = pagedFluxResponse.map(dao ->
-        new TodoItem(
-          dao.getId(),
-          dao.getName(),
-          new User(dao.getOwner()),
-          dao.getSecondsSpent(),
-          dao.getEstimatedSecondsToFinish()
-        )
-      ).collectList().block();
-      return tasks;
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = performQuery(
+        databaseName,
+        taskContainerName,
+        String.format("SELECT * FROM c WHERE c.owner.id = '%s'", user.getId()),
+        TodoItemDAO.class
+      );
+      return pagedFluxResponse.map(TodoItem::new
+        ).collectList().block();
     } catch (Exception ex) {
       ex.printStackTrace();
     } finally {
@@ -271,22 +250,17 @@ public class CosmosDB implements IDatabase {
   public User fetchUser(String userName) {
     List<User> users = new ArrayList<>();
     try {
-      client = createClient();
-      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase(databaseName);
-      container = database.getContainer(userContainerName);
-      CosmosPagedFlux<UserDAO> pagedFluxResponse = container.queryItems(
-        String.format("SELECT * FROM c WHERE c.name = '%s'", userName), queryOptions, UserDAO.class);
-      users = pagedFluxResponse.map(dao ->
-        new User(
-          dao.getId(),
-          dao.getName(),
-          LocalDate.parse(dao.getDate())
-        )
-      ).collectList().block();
+      CosmosPagedFlux<UserDAO> pagedFluxResponse = performQuery(
+        databaseName,
+        userContainerName,
+        String.format("SELECT * FROM c WHERE c.name = '%s'", userName),
+        UserDAO.class
+      );
+      users = pagedFluxResponse.map(User::new
+        ).collectList().block();
       try {
         return users.get(0);
-      } catch (NullPointerException ex) {
+      } catch (IndexOutOfBoundsException ex) {
         return null;
       }
     } catch (Exception ex) {
@@ -300,7 +274,7 @@ public class CosmosDB implements IDatabase {
     }
     try {
       return users.get(0);
-    } catch (NullPointerException ex) {
+    } catch (IndexOutOfBoundsException ex) {
       return null;
     }
   }
@@ -309,24 +283,17 @@ public class CosmosDB implements IDatabase {
   public TodoItem fetchTask(String taskName) {
     List<TodoItem> tasks = new ArrayList<>();
     try {
-      client = createClient();
-      CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-      database = client.getDatabase(databaseName);
-      container = database.getContainer(taskContainerName);
-      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = container.queryItems(
-        String.format("SELECT * FROM c WHERE c.name = '%s'", taskName), queryOptions, TodoItemDAO.class);
-      tasks = pagedFluxResponse.map(dao ->
-        new TodoItem(
-          dao.getId(),
-          dao.getName(),
-          new User(dao.getOwner()),
-          dao.getSecondsSpent(),
-          dao.getEstimatedSecondsToFinish()
-        )
-      ).collectList().block();
+      CosmosPagedFlux<TodoItemDAO> pagedFluxResponse = performQuery(
+        databaseName,
+        taskContainerName,
+        String.format("SELECT * FROM c WHERE c.name = '%s'", taskName),
+        TodoItemDAO.class
+      );
+      tasks = pagedFluxResponse.map(TodoItem::new
+        ).collectList().block();
       try {
         return tasks.get(0);
-      } catch (NullPointerException ex) {
+      } catch (IndexOutOfBoundsException ex) {
         return null;
       }
     } catch (Exception ex) {
@@ -340,9 +307,18 @@ public class CosmosDB implements IDatabase {
     }
     try {
       return tasks.get(0);
-    } catch (NullPointerException ex) {
+    } catch (IndexOutOfBoundsException ex) {
       return null;
     }
+  }
+
+  private <T> CosmosPagedFlux<T> performQuery(String databaseName, String containerName, String query, Class<T> returnType) {
+    client = createClient();
+    CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
+    database = client.getDatabase(databaseName);
+    container = database.getContainer(containerName);
+    return container.queryItems(
+      query, queryOptions, returnType);
   }
 
 }

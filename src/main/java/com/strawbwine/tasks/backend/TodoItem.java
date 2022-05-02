@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 public class TodoItem {
-    private String id;
+    private final String id;
     private String name;
     private User owner;
     private Duration timeSpent = Duration.ZERO;
@@ -48,6 +48,14 @@ public class TodoItem {
             this.estimatedTimeToFinish = taskSpec.getEstimatedTimeToFinishDuration();
         else
             setEstimatedTimeToFinish(TimeUtilities.fromHoursToDuration(taskSpec.getEstimatedTimeToFinishInHours()));
+    }
+
+    public TodoItem(TodoItemDAO dao) {
+        this.id = dao.getId();
+        this.name = dao.getName();
+        this.owner = new User(dao.getOwner());
+        this.timeSpent = Duration.ofSeconds(dao.getSecondsSpent());
+        this.estimatedTimeToFinish = Duration.ofSeconds(dao.getEstimatedSecondsToFinish());
     }
 
     public String getId() {
