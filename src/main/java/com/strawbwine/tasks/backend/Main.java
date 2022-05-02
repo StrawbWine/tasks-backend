@@ -10,38 +10,7 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        CosmosDB cosmos = new CosmosDB();
-
-        User kjell = new User("Kjell", LocalDate.parse("1980-01-01"));
-        User roger = new User("Roger", LocalDate.parse("2000-01-01"));
-
-/*        try {
-            cosmos.write(kjell);
-            cosmos.write(roger);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }*/
-
-/*        TodoItem someTask = new TodoItem("Kode", roger, 1.0, 5.0);
-        try {
-            cosmos.write(someTask);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }*/
-
-/*        List<TodoItem> tasks = cosmos.fetchTasksForUser(roger);
-        for(TodoItem task: tasks) {
-            System.out.println(task.getName());
-        }*/
-
-/*        List<User> users = cosmos.fetchAllUsers();
-        for(User user: users) {
-            System.out.println(user.getName());
-        }*/
-
-        System.out.println(cosmos.fetchUser("Kjell").getDateOfBirth().toString());
-
-        IDatabase storage = new FileStorage();
+        IDatabase storage = new CosmosDB();
 
         List<GUIOption> options = getGuiOptions();
         GUI gui = new GUI(options, storage);

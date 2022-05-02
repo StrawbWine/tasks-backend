@@ -131,7 +131,6 @@ public class CosmosDB implements IDatabase {
 
   @Override
   public DatabaseResponse write(TodoItem task) {
-    System.out.println("Hello");
     TodoItemDAO todoitemDAO = new TodoItemDAO(
       task.getId(),
       task.getName(),
