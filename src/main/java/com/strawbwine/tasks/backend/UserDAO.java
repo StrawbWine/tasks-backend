@@ -1,11 +1,12 @@
 package com.strawbwine.tasks.backend;
 
-import java.util.UUID;
+import java.time.ZoneOffset;
 
 public class UserDAO {
   private String id;
   private String name;
   private String date;
+  private long createdTime;
 
   public UserDAO() {}
 
@@ -19,6 +20,7 @@ public class UserDAO {
     this.id = user.getId();
     this.name = user.getName();
     this.date = user.getDateOfBirth().toString();
+    this.createdTime = user.getCreatedTime().toEpochSecond(ZoneOffset.UTC);
   }
 
   public String getName() {
@@ -39,5 +41,9 @@ public class UserDAO {
 
   public String getId() {
     return id;
+  }
+
+  public long getCreatedTime() {
+    return createdTime;
   }
 }

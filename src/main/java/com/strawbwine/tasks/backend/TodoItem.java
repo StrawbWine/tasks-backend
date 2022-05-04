@@ -1,6 +1,8 @@
 package com.strawbwine.tasks.backend;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 public class TodoItem {
@@ -9,6 +11,7 @@ public class TodoItem {
     private User owner;
     private Duration timeSpent = Duration.ZERO;
     private Duration estimatedTimeToFinish;
+    private LocalDateTime createdTime = LocalDateTime.now();
 
     public TodoItem(String name, User owner, Duration estimatedTimeToFinish) {
         this.id = UUID.randomUUID().toString();
@@ -56,6 +59,7 @@ public class TodoItem {
         this.owner = new User(dao.getOwner());
         this.timeSpent = Duration.ofSeconds(dao.getSecondsSpent());
         this.estimatedTimeToFinish = Duration.ofSeconds(dao.getEstimatedSecondsToFinish());
+        this.createdTime = LocalDateTime.ofEpochSecond(dao.getCreatedTime(), 0, ZoneOffset.UTC);
     }
 
     public String getId() {
@@ -97,8 +101,12 @@ public class TodoItem {
         this.estimatedTimeToFinish = estimatedTimeToFinish;
     }
 
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
     @Override
     public String toString() {
-        return String.format("%15s %15s %15s %15s", name, owner.toString(), timeSpent.toString(), estimatedTimeToFinish.toString());
+        return String.format("%20s %20s %20s %20s %20s", name, owner.toString(), timeSpent.toString(), estimatedTimeToFinish.toString(), createdTime.toString());
     }
 }

@@ -128,13 +128,7 @@ public class CosmosDB implements IDatabase {
 
   @Override
   public DatabaseResponse write(TodoItem task) {
-    TodoItemDAO todoitemDAO = new TodoItemDAO(
-      task.getId(),
-      task.getName(),
-      new UserDAO(task.getOwner()),
-      task.getTimeSpent().toSeconds(),
-      task.getEstimatedTimeToFinish().toSeconds()
-    );
+    TodoItemDAO todoitemDAO = new TodoItemDAO(task);
     try {
       client = createClient();
       database = client.getDatabase(databaseName);
@@ -151,11 +145,7 @@ public class CosmosDB implements IDatabase {
 
   @Override
   public DatabaseResponse write(User user) {
-    UserDAO userDAO = new UserDAO(
-      user.getId(),
-      user.getName(),
-      user.getDateOfBirth().toString()
-    );
+    UserDAO userDAO = new UserDAO(user);
     try {
       client = createClient();
       database = client.getDatabase(databaseName);

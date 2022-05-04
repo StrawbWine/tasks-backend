@@ -1,12 +1,15 @@
 package com.strawbwine.tasks.backend;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 public class User {
-    private String id;
+    private final String id;
     private String name;
     private LocalDate dateOfBirth;
+    private LocalDateTime createdTime = LocalDateTime.now();
 
     public User(String name, LocalDate dateOfBirth) {
         this.id = UUID.randomUUID().toString();
@@ -24,6 +27,7 @@ public class User {
         this.id = dao.getId();
         this.name = dao.getName();
         this.dateOfBirth = LocalDate.parse(dao.getDate());
+        this.createdTime = LocalDateTime.ofEpochSecond(dao.getCreatedTime(), 0, ZoneOffset.UTC);
     }
 
     public String getId() {
@@ -46,8 +50,12 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
     @Override
     public String toString() {
-        return String.format("%15s %15s", this.name, this.dateOfBirth);
+        return String.format("%20s %20s %20s", this.name, this.dateOfBirth, this.createdTime.toString());
     }
 }
