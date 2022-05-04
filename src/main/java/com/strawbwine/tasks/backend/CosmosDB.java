@@ -3,19 +3,16 @@ package com.strawbwine.tasks.backend;
 import com.azure.cosmos.*;
 import com.azure.cosmos.models.*;
 import com.azure.cosmos.util.CosmosPagedFlux;
-import com.ctc.wstx.exc.WstxOutputException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinder;
-import reactor.core.publisher.Flux;
+
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class CosmosDB implements IDatabase {
 
