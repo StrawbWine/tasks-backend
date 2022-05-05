@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final IDatabase cosmos = new CosmosDB();
-  @GetMapping("/user")
+  @GetMapping(value = "/user", produces = "application/json")
   public UserDAO user(@RequestParam(value = "name") String name) {
     return new UserDAO(cosmos.fetchUser(name));
   }
