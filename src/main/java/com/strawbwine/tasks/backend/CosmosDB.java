@@ -26,10 +26,10 @@ public class CosmosDB implements IDatabase {
   private final String MASTER_KEY = System.getenv("COSMOS_ACCOUNT_KEY");
   private final String HOST = System.getenv("COSMOS_ACCOUNT_HOST");
 
-  protected static Logger logger;
+/*  protected static Logger logger;*/
 
   public CosmosDB() {
-    logger = LoggerFactory.getLogger(CosmosDB.class.getSimpleName());
+    /*logger = LoggerFactory.getLogger(CosmosDB.class.getSimpleName());*/
     try {
       createDatabaseIfNotExists();
     } catch (Exception e) {
@@ -55,13 +55,13 @@ public class CosmosDB implements IDatabase {
   }
 
   private void createDatabaseIfNotExists() {
-    logger.info("Create database {} if not exists.", databaseName);
+/*    logger.info("Create database {} if not exists.", databaseName);*/
     try {
       client = createClient();
       Mono<CosmosDatabaseResponse> databaseResponseMono = client.createDatabaseIfNotExists(databaseName);
       databaseResponseMono.flatMap(databaseResponse -> {
         database = client.getDatabase(databaseResponse.getProperties().getId());
-        logger.info("Checking database {} completed!\n", database.getId());
+        /*logger.info("Checking database {} completed!\n", database.getId());*/
         return Mono.empty();
       }).block();
     } catch (Exception ex) {

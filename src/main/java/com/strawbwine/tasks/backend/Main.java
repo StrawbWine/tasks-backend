@@ -1,15 +1,21 @@
 package com.strawbwine.tasks.backend;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
         IDatabase storage = new CosmosDB();
+        SpringApplication.run(Main.class, args);
+    }
 
-        List<GUIOption> options = getGuiOptions();
+/*        List<GUIOption> options = getGuiOptions();
         GUI gui = new GUI(options, storage);
 
         gui.startUpMessage();
@@ -75,5 +81,5 @@ public class Main {
         options.add(new GUIOption(6, OptionType.DELETETASK, "Delete task"));
         options.add(new GUIOption(7, OptionType.QUIT, "Exit application"));
         return options;
-    }
+    }*/
 }
