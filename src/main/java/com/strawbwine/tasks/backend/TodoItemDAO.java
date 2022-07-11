@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 
 public class TodoItemDAO {
   private String id;
+  private String discriminator;
   private String name;
   private UserDAO owner;
   private long secondsSpent;
@@ -19,6 +20,7 @@ public class TodoItemDAO {
     this.secondsSpent = secondsSpent;
     this.estimatedSecondsToFinish = estimatedSecondsToFinish;
     this.createdTime = createdTime;
+    this.discriminator = "TodoItem";
   }
 
   public TodoItemDAO(TodoItem task) {
@@ -28,6 +30,7 @@ public class TodoItemDAO {
     this.secondsSpent = task.getTimeSpent().toSeconds();
     this.estimatedSecondsToFinish = task.getEstimatedTimeToFinish().toSeconds();
     this.createdTime = task.getCreatedTime().toEpochSecond(ZoneOffset.UTC);
+    this.discriminator = "TodoItem";
   }
 
   public String getId() {
@@ -68,5 +71,13 @@ public class TodoItemDAO {
 
   public long getCreatedTime() {
     return createdTime;
+  }
+
+  public String getDiscriminator() {
+    return discriminator;
+  }
+
+  public void setDiscriminator(String discriminator) {
+    this.discriminator = discriminator;
   }
 }

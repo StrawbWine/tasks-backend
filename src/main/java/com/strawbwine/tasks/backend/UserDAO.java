@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 
 public class UserDAO {
   private String id;
+  private String discriminator;
   private String name;
   private String date;
   private long createdTime;
@@ -14,6 +15,7 @@ public class UserDAO {
     this.id = id;
     this.name = name;
     this.date = date;
+    this.discriminator = "User";
   }
 
   public UserDAO(User user) {
@@ -21,6 +23,7 @@ public class UserDAO {
     this.name = user.getName();
     this.date = user.getDateOfBirth().toString();
     this.createdTime = user.getCreatedTime().toEpochSecond(ZoneOffset.UTC);
+    this.discriminator = "User";
   }
 
   public String getName() {
@@ -45,5 +48,13 @@ public class UserDAO {
 
   public long getCreatedTime() {
     return createdTime;
+  }
+
+  public String getDiscriminator() {
+    return discriminator;
+  }
+
+  public void setDiscriminator(String discriminator) {
+    this.discriminator = discriminator;
   }
 }
